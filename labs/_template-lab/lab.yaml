@@ -1,0 +1,11 @@
+# Metadata for the lab. This will be used to auto-generate the entry in the main README.
+name: "Your Lab Name Here"
+slug: "your-lab-slug-here"
+category: "Backend Engineering" # e.g., Data Engineering, DevOps & Infrastructure
+subcategory: "Debugging" # e.g., Performance Tuning, Refactoring
+grading: "Performance"
+seniority: "Junior" # Entry Level, Junior, Mid Senior, Senior, Lead
+description: "A brief, one-sentence description of the lab's challenge."
+contributor:
+  github: "https://github.com/your-username"
+  linkedin: "https://www.linkedin.com/in/your-profile/"

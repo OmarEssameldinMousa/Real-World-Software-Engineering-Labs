@@ -1,0 +1,80 @@
+name: 'CI - Add/Update Lab'
+
+on:
+  pull_request:
+    # This workflow runs ONLY for changes inside the labs directory.
+    paths:
+      - 'labs/**'
+
+jobs:
+  validate-and-update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 'Checkout Code'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: 'Identify Changed Lab Directory'
+        id: changed-lab
+        run: |
+          set -euo pipefail
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" || true)
+          
+          LABS=$(echo "$CHANGED_FILES" | awk -F'/' '/^labs\// {print $2}' | sort -u | tr '\n' ' ' | xargs)
+          
+          if [[ -z "$LABS" ]]; then
+            echo "Error: Couldn't detect any lab directory in the changes." >&2
+            exit 1
+          fi
+          
+          LAB_COUNT=$(echo "$LABS" | wc -w)
+          if [[ "$LAB_COUNT" -ne 1 ]]; then
+            echo "Error: PR modifies more than one lab ($LAB_COUNT): $LABS" >&2
+            exit 1
+          fi
+
+          SELECTED=$(echo "$LABS" | awk '{print $1}')
+          echo "Changed lab detected: $SELECTED"
+
+          # Ensure the lab name is unique (not duplicated)
+          if [ -d "labs/$SELECTED" ]; then
+            OTHER_LABS=$(find labs -mindepth 1 -maxdepth 1 -type d -not -name "$SELECTED" -exec basename {} \;)
+            for lab in $OTHER_LABS; do
+              if [[ "$lab" == "$SELECTED" ]]; then
+          echo "Error: Lab name '$SELECTED' is not unique." >&2
+          exit 1
+              fi
+            done
+          fi
+
+          echo "name=$SELECTED" >> $GITHUB_OUTPUT
+
+      - name: 'Make run-check.sh Executable and Run Lab Structure and Validation Check'
+        run: |
+          chmod +x ./tools/run-check.sh
+          ./tools/run-check.sh ${{ steps.changed-lab.outputs.name }}
+
+      - name: 'Set up Python'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 'Install Python Dependencies'
+        run: pip install pyyaml
+
+      - name: 'Update README with Lab Info'
+        run: python tools/update-readme.py
+
+      - name: 'Commit and Push README Changes'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'docs(ci): auto-update lab index in README'
+          file_pattern: 'README.md'
+          branch: ${{ github.head_ref }}

@@ -1,0 +1,46 @@
+# .github/workflows/pr-add-solution.yml
+name: 'CI - Validate and Add Solution'
+
+on:
+  pull_request:
+    # This workflow runs ONLY for changes to the solutions.json file.
+    paths:
+      - 'solutions.json'
+
+jobs:
+  validate-and-render-solution:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: 'Set up Python'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 'Install Python Dependencies'
+        run: pip install pyyaml
+
+      - name: 'Lint Solution Entry'
+        run: python tools/solutions-lint.py
+
+      - name: 'Render SOLUTIONS.md from JSON'
+        run: python tools/render-solutions.py
+
+      - name: 'Update Solver Count in README'
+        run: python tools/update-readme.py
+
+      - name: 'Commit and Push Documentation Changes'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'docs(ci): auto-update solutions & solver count'
+          # Commit both potentially changed files
+          file_pattern: 'README.md SOLUTIONS.md'
+          branch: ${{ github.head_ref }}
