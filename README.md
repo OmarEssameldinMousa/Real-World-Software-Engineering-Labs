@@ -1,3 +1,6 @@
+
+![6502244](https://github.com/user-attachments/assets/10aff5ac-07de-44d7-9e45-072f92bf5421)
+
 # 🛠️ Real-World Software Engineering Labs
 
 <p align="center">
@@ -154,5 +157,4 @@ cd labs/<lab-name>
 
 # If available, run the local solution validator
 ./scripts/solution-validator.sh# Real-World-Software-Engineering-Labs
-```# Real-World-Software-Engineering-Labs
-# Real-World-Software-Engineering-Labs
+```
