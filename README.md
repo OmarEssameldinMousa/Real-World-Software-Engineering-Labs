@@ -131,7 +131,9 @@ To help you find the right challenge, labs are categorized by software engineeri
 ## 📑 Labs Index
 
 <!-- LABS_TABLE_START -->
-
+| Lab Category | Subcategory | Seniority Level | Lab Name | Description | Grading | Contributor | # Solvers |
+|---|---|---|---|---|---|---|---|
+| Data Engineering | Performance Tuning | <span style="color:#f1c40f;">Mid Senior</span> | [N/A](labs/streaming-delayed-join) | Fix a streaming pipeline where a costly join introduces a 1-hour processing delay. Target: < 5 min latency. | timed | [@OmarEssameldinMousa](https://github.com/OmarEssameldinMousa) | 0 |
 <!-- LABS_TABLE_END -->
 
 ---
