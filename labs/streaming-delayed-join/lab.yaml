@@ -1,4 +1,4 @@
-exname: "Streaming Delayed Join"
+name: "Streaming Delayed Join"
 slug: "streaming-delayed-join"
 category: "Data Engineering"
 subcategory: "Performance Tuning"
