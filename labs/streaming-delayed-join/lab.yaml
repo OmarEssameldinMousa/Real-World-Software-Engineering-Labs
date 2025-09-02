@@ -1,0 +1,9 @@
+exname: "Streaming Delayed Join"
+slug: "streaming-delayed-join"
+category: "Data Engineering"
+subcategory: "Performance Tuning"
+grading: "timed"
+seniority: "Mid Senior"
+description: "Fix a streaming pipeline where a costly join introduces a 1-hour processing delay. Target: < 5 min latency."
+contributor:
+  github_user: "OmarEssameldinMousa"
